@@ -2,131 +2,118 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TAILLE_MAX 1000
+#define MAX_SIZE 1000
 
 
 int main(int argc, char** argv){
     
     if (3 > argc)
     {
-        printf("Nombre de parametres insuffisant\n");
+        printf("Too few parameters\n");
         return 1;
     }
 
-  //   FILE* fich1 = NULL;
-  //   FILE* fich2 = NULL;
-
-  //   fich1 = fopen(argv[1], "r");
-  //   fich2 = fopen(argv[2], "r");
-
-
-  //   char** lignesFich1 = NULL;
-  //   lignesFich1 = (char**)malloc(TAILLE_MAX*sizeof(char*));
-  //   char** lignesFich2 = NULL;
-  //   lignesFich2 = (char**)malloc(TAILLE_MAX*sizeof(char*));
-  //   int i = 0;
-  //   char ligneFich1[TAILLE_MAX] = "";
-  //   printf("START\n");
-  //   while(fgets(ligneFich1, TAILLE_MAX, fich1) != NULL) {
-  //   	printf("TEST\n");
-    	
-  //   	lignesFich1[i] = ligneFich1;
-		
-		// int j;
-  //   	for (j = 0; j <= i; ++j)
-  //   	{
-  //   		printf("%s\n", lignesFich1[j]);
-  //   	}
-  //   	i++;
-  //   }
-  //   // printf("%s\n", ligneFich1);
-  //   printf("%s\n", lignesFich1[2]);
-  //   printf("%s\n", lignesFich1[0]);
-
-
-
     int j=0;
     
-    FILE * fich1=fopen(argv[1],"r");
-    FILE * fich2=fopen(argv[2],"r");
+    FILE * file1=fopen(argv[1],"r");
+    FILE * file2=fopen(argv[2],"r");
 
-    if(fich1 == NULL || fich2 == NULL)
+    if(file1 == NULL || file2 == NULL)
     	return 1;
 
 
     // INIT TAB1
-    char** tab1 = (char**)malloc((TAILLE_MAX)*sizeof(char*));
+    char** tab1 = (char**)malloc((MAX_SIZE)*sizeof(char*));
     char ** tmp1 = tab1;
-    char* parcours1 = (char*)malloc((TAILLE_MAX)*sizeof(char));
-    int tailleTab1 = 0;
+    char* readThrough1 = (char*)malloc((MAX_SIZE)*sizeof(char));
+    int tabSize1 = 0;
     
-    while(fgets(parcours1, TAILLE_MAX, fich1) != NULL)
+    while(fgets(readThrough1, MAX_SIZE, file1) != NULL)
     {
-    	tmp1[tailleTab1] = (char*)malloc((strlen(parcours1))*sizeof(char));
-    	strcpy(tmp1[tailleTab1], parcours1);
-    	tailleTab1++;
+    	tmp1[tabSize1] = (char*)malloc((strlen(readThrough1))*sizeof(char));
+    	strcpy(tmp1[tabSize1], readThrough1);
+    	tabSize1++;
     }
-
-    j=0;
-
-    while(j < tailleTab1)
-    {
-    	printf("%s", tab1[j]);
-    	j++;
-    }
-
-    // INIT TAB2
-    char** tab2 = (char**)malloc((TAILLE_MAX)*sizeof(char*));
+	
+	// INIT TAB2
+    char** tab2 = (char**)malloc((MAX_SIZE)*sizeof(char*));
     char ** tmp2 = tab2;
-    char* parcours2=(char*)malloc((TAILLE_MAX)*sizeof(char));
-    int tailleTab2=0;
+    char* readThrough2=(char*)malloc((MAX_SIZE)*sizeof(char));
+    int tabSize2=0;
     j = 0;
-    while(fgets(parcours2, TAILLE_MAX, fich2) != NULL)
+    while(fgets(readThrough2, MAX_SIZE, file2) != NULL)
     {
-    	tmp2[tailleTab2] = (char*)malloc((strlen(parcours2))*sizeof(char));
-    	strcpy(tmp2[tailleTab2], parcours2);
-    	tailleTab2++;
+    	tmp2[tabSize2] = (char*)malloc((strlen(readThrough2))*sizeof(char));
+    	strcpy(tmp2[tabSize2], readThrough2);
+    	tabSize2++;
     }
-
-    j=0;
-
-    while(j < tailleTab2)
+	
+	
+	
+	
+	
+    /*j=0;	
+    while(j < tabSize1)
     {
-    	printf("%s", tab2[j]);
+    	printf("%i : %s", j, tab1[j]);
     	j++;
     }
+	
+	printf("\n\n");
+	
+    j=0;
+    while(j < tabSize2)
+    {
+    	printf("%i : %s", j, tab2[j]);
+    	j++;
+    }*/
 
 
 
     // COMAPARAISON DES FICHIERS
-    // int i = 0;
-    // j = 0;
-    // while(i <= tailleTab1 && j <= tailleTab2) {
-    // 	if(strcmp(tab1[i], tab2[j])) {
-    // 		i++;
-    // 		j++;
-    // 	} else {
+    int i = 0;
+    j = 0;
+	int j2 = 0;
+    while(i < tabSize1 && j < tabSize2) {
+		if(!strcmp(tab1[i], tab2[j])) {
+    		printf("Ligne %i : OK\n", i+1);
+			i++;
+    		j++;
+		} else { //En gros j'essaye de voir si les 2 lignes ne sont pas identiques je continue les lignes du fichier 2 
+			j2 = j; //et j'essaye de trouver si la ligne du fichier 2 == la ligne du fichier 1 qui est en attente  
+			j++; //et si c'est le cas et bin faut faire des trucs avec. J2 <- J ça permet après de pouvoir dire que dans le fichier
+			while (j < tabSize2) { //ce sont les lignes de j2 à j (puisqu'on a continué j) qui ne sont pas dans le fichier 1.
+				if(!strcmp(tab1[i], tab2[j])) //après j'ai juste essayé des printf pour voir ce que j'avais
+				{
+					if (i == j) {
+						printf("%s - %s", tab1[i], tab2[j]);
+					}
+				}
+				j++;
+			}
+			// printf("%s - %s", tab1[i], tab2[j]);
+			j = j2;
+			i++;j++;
+    	}
 
-    // 	}
-
-    // }
+    }
 
 // ANCIENNEMENT
-    // char ligneFich1[TAILLE_MAX] = "";
-    // char ligneFich2[TAILLE_MAX] = "";
-    // while(fgets(ligneFich1, TAILLE_MAX, fich1) != NULL) {
-    // 	while(fgets(ligneFich2, TAILLE_MAX, fich2) != NULL) {
-    // 		if(0 == strcmp(ligneFich1, ligneFich2)) {
-    // 			// printf("> %s", ligneFich1);
+    // char fileLine1[MAX_SIZE] = "";
+    // char fileLine2[MAX_SIZE] = "";
+    // while(fgets(fileLine1, MAX_SIZE, file1) != NULL) {
+    // 	while(fgets(fileLine2, MAX_SIZE, file2) != NULL) {
+    // 		if(0 == strcmp(fileLine1, fileLine2)) {
+    // 			// printf("> %s", fileLine1);
     // 			break;
     // 		} else {
-    // 			printf("> %s", ligneFich2);
+    // 			printf("> %s", fileLine2);
     // 		}
-    // 	//     ligneFich2 = (char*)malloc(sizeof(char*));
-    // 		// printf("%s\n", ligneFich2);
+    // 	//     fileLine2 = (char*)malloc(sizeof(char*));
+    // 		// printf("%s\n", fileLine2);
     // 	}
-	   //  // ligneFich1 = (char*)malloc(sizeof(char*));
-	   //  // printf("%s\n", ligneFich1);
+	   //  // fileLine1 = (char*)malloc(sizeof(char*));
+	   //  // printf("%s\n", fileLine1);
     // }
 // <--
 

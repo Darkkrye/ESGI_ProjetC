@@ -1106,4 +1106,4 @@ compare_files (dir0, name0, dir1, name1, depth)
 }
 
 
-http://www.opensource.apple.com/source/gnudiff/gnudiff-10/diffutils/diff.c
+//http://www.opensource.apple.com/source/gnudiff/gnudiff-10/diffutils/diff.c
