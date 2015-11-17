@@ -74,30 +74,61 @@ int main(int argc, char** argv){
     int i = 0;
     j = 0;
 	int j2 = 0;
+    int isLinesAdded = 0, isLinesDeleted = 0, isLinesReplaced = 0;
+
     while(i < tabSize1 && j < tabSize2) {
+
 		if(!strcmp(tab1[i], tab2[j])) {
-    		printf("Ligne %i : OK\n", i+1);
+    		// printf("Ligne %i : OK\n", i+1);
+            // printf("i : %d, j : %d\n", i, j);
 			i++;
     		j++;
 		} else { //En gros j'essaye de voir si les 2 lignes ne sont pas identiques je continue les lignes du fichier 2 
+            // printf("i : %d, j : %d\n", i, j);
 			j2 = j; //et j'essaye de trouver si la ligne du fichier 2 == la ligne du fichier 1 qui est en attente  
 			j++; //et si c'est le cas et bin faut faire des trucs avec. J2 <- J ça permet après de pouvoir dire que dans le fichier
+
 			while (j < tabSize2) { //ce sont les lignes de j2 à j (puisqu'on a continué j) qui ne sont pas dans le fichier 1.
+
 				if(!strcmp(tab1[i], tab2[j])) //après j'ai juste essayé des printf pour voir ce que j'avais
 				{
-					if (i == j) {
-						printf("%s - %s", tab1[i], tab2[j]);
-					}
+					// Si le fichier 2 a des lignes en plus -->
+                    if(j == j2 + 1) {
+                        printf("%da%d\n> %s", i, j, tab2[j2]);
+                        isLinesAdded = 1;
+                    }
+                    else {
+                        printf("%da%d,%d\n", i, j2+1, j);
+                        isLinesAdded = 1;
+                        for( ; j2 < j ; j2++) {
+                            printf("> %s", tab2[j2]);
+                        }
+                    }
+                    // <--
+                    if(isLinesAdded) {
+                        printf("Sortie\n");
+                        break;
+                    }
+
+
+                    // printf("%s - %s", tab1[i], tab2[j]);
+					
 				}
 				j++;
 			}
 			// printf("%s - %s", tab1[i], tab2[j]);
-			j = j2;
-			i++;j++;
+			// i++;j++;
+
+            if(!isLinesAdded) {
+                j = j2;
+                printf("GGGGGGGGGGG\n");
+                i = tabSize1;
+            }
     	}
 
-    }
 
+    }
+    // printf("\n");
 // ANCIENNEMENT
     // char fileLine1[MAX_SIZE] = "";
     // char fileLine2[MAX_SIZE] = "";
