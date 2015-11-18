@@ -47,57 +47,33 @@ int main(int argc, char** argv){
     	strcpy(tmp2[tabSize2], readThrough2);
     	tabSize2++;
     }
-	
-	
-	
-	
-	
-    /*j=0;	
-    while(j < tabSize1)
-    {
-    	printf("%i : %s", j, tab1[j]);
-    	j++;
-    }
-	
-	printf("\n\n");
-	
-    j=0;
-    while(j < tabSize2)
-    {
-    	printf("%i : %s", j, tab2[j]);
-    	j++;
-    }*/
-
-
 
     // COMAPARAISON DES FICHIERS
     int i = 0;
     j = 0;
-	int j2 = 0;
+	int j2 = 0, i2 = 0;
     int isLinesAdded = 0, isLinesDeleted = 0, isLinesReplaced = 0;
 
     while(i < tabSize1 && j < tabSize2) {
 
 		if(!strcmp(tab1[i], tab2[j])) {
-    		// printf("Ligne %i : OK\n", i+1);
-            // printf("i : %d, j : %d\n", i, j);
+            // printf("GOOD 2 -- i : %d - j : %d\n", i, j);
 			i++;
     		j++;
-		} else { //En gros j'essaye de voir si les 2 lignes ne sont pas identiques je continue les lignes du fichier 2 
+		} else {
             // printf("i : %d, j : %d\n", i, j);
-			j2 = j; //et j'essaye de trouver si la ligne du fichier 2 == la ligne du fichier 1 qui est en attente  
-			j++; //et si c'est le cas et bin faut faire des trucs avec. J2 <- J ça permet après de pouvoir dire que dans le fichier
+			j2 = j;
+			j++;
+            isLinesAdded = 0;
+			while (j < tabSize2) {
 
-			while (j < tabSize2) { //ce sont les lignes de j2 à j (puisqu'on a continué j) qui ne sont pas dans le fichier 1.
-
-				if(!strcmp(tab1[i], tab2[j])) //après j'ai juste essayé des printf pour voir ce que j'avais
+				if(!strcmp(tab1[i], tab2[j]))
 				{
 					// Si le fichier 2 a des lignes en plus -->
                     if(j == j2 + 1) {
                         printf("%da%d\n> %s", i, j, tab2[j2]);
                         isLinesAdded = 1;
-                    }
-                    else {
+                    } else {
                         printf("%da%d,%d\n", i, j2+1, j);
                         isLinesAdded = 1;
                         for( ; j2 < j ; j2++) {
@@ -106,47 +82,48 @@ int main(int argc, char** argv){
                     }
                     // <--
                     if(isLinesAdded) {
-                        printf("Sortie\n");
+                        j2++;
+                        // printf("GOOD --- i : %d - j : %d\n", i, j);
                         break;
                     }
-
-
-                    // printf("%s - %s", tab1[i], tab2[j]);
-					
+                    // printf("%s - %s", tab1[i], tab2[j]);					
 				}
 				j++;
 			}
-			// printf("%s - %s", tab1[i], tab2[j]);
-			// i++;j++;
+            // printf("FIN WHILE - i : %d - j : %d %d\n", i, j2, j);
 
             if(!isLinesAdded) {
                 j = j2;
-                printf("GGGGGGGGGGG\n");
-                i = tabSize1;
+                i2 = i;
+                i++;
+                isLinesDeleted = 0;
+                while(i < tabSize1) {
+                    if(!strcmp(tab1[i], tab2[j])) {
+                        if (i == i2 + 1) {
+                            printf("%dd%d\n< %s", i, j, tab1[i2]);
+                            isLinesDeleted = 1;
+                        } else {
+                            printf("%d,%dd%d\n", i2+1, i, j);
+                            isLinesDeleted = 1;
+                            for( ; i2 < i ; i2++) {
+                                printf("< %s", tab1[i2]);
+                            }
+                        }
+
+                        if(isLinesDeleted) {
+                            i2++;
+                            // printf("GOOD --- i : %d - j : %d\n", i, j);
+                            break;
+                        }
+                    }
+                    i++;
+                }
             }
     	}
 
 
     }
     // printf("\n");
-// ANCIENNEMENT
-    // char fileLine1[MAX_SIZE] = "";
-    // char fileLine2[MAX_SIZE] = "";
-    // while(fgets(fileLine1, MAX_SIZE, file1) != NULL) {
-    // 	while(fgets(fileLine2, MAX_SIZE, file2) != NULL) {
-    // 		if(0 == strcmp(fileLine1, fileLine2)) {
-    // 			// printf("> %s", fileLine1);
-    // 			break;
-    // 		} else {
-    // 			printf("> %s", fileLine2);
-    // 		}
-    // 	//     fileLine2 = (char*)malloc(sizeof(char*));
-    // 		// printf("%s\n", fileLine2);
-    // 	}
-	   //  // fileLine1 = (char*)malloc(sizeof(char*));
-	   //  // printf("%s\n", fileLine1);
-    // }
-// <--
 
     return 0;
 }
