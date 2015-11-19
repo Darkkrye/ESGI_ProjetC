@@ -128,29 +128,24 @@ int main(int argc, char** argv){
                         while(j < tabSize2) {
                             if(!strcmp(tab1[i], tab2[j])) {
                                 // printf("i = %d / i2 = %d / j = %d / j2 = %d\n", i, i2, j, j2);
-                                if(i2 + 1 == i && j2 + 1 == j){
+                                if(i2 + 1 == i && j2 + 1 == j)
                                     printf("%dc%d\n", i, j);
-                                    for (; i2 < i; i2++) {
-                                        printf("< %s", tab1[i2]);
-                                    }
-                                    printf("---\n");
-                                    for(; j2 < j; j2++) {
-                                        printf("> %s", tab2[j2]);
-                                    }
-                                    isLinesReplaced = 1;
-                                    break;
-                                } else {
+                                else if (i2 + 1 == i && j2 + 1 != j)
+                                    printf("%dc%d,%d\n", i2+1, j2+1, j);
+                                else if(i2 + 1 != i && j2 + 1 == j)
+                                    printf("%d,%dc%d\n", i2+1, i, j2+1);
+                                else 
                                     printf("%d,%dc%d,%d\n", i2+1, i, j2+1, j);
-                                    for (; i2 < i; i2++) {
-                                        printf("< %s", tab1[i2]);
-                                    }
-                                    printf("---\n");
-                                    for(; j2 < j; j2++) {
-                                        printf("> %s", tab2[j2]);
-                                    }
-                                    isLinesReplaced = 1;
-                                    break;
+
+                                for (; i2 < i; i2++) {
+                                    printf("< %s", tab1[i2]);
                                 }
+                                printf("---\n");
+                                for(; j2 < j; j2++) {
+                                    printf("> %s", tab2[j2]);
+                                }
+                                isLinesReplaced = 1;
+                                break;
                             }
                             j++;
                         }
