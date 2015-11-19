@@ -8,3 +8,5 @@ C
 EEEE
 RRRR
 D
+azerty
+uiop
