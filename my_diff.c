@@ -28,8 +28,7 @@ int main(int argc, char** argv){
     char* readThrough1 = (char*)malloc((MAX_SIZE)*sizeof(char));
     int tabSize1 = 0;
     
-    while(fgets(readThrough1, MAX_SIZE, file1) != NULL)
-    {
+    while(fgets(readThrough1, MAX_SIZE, file1) != NULL) {
     	tmp1[tabSize1] = (char*)malloc((strlen(readThrough1))*sizeof(char));
     	strcpy(tmp1[tabSize1], readThrough1);
     	tabSize1++;
@@ -41,8 +40,7 @@ int main(int argc, char** argv){
     char* readThrough2=(char*)malloc((MAX_SIZE)*sizeof(char));
     int tabSize2=0;
     j = 0;
-    while(fgets(readThrough2, MAX_SIZE, file2) != NULL)
-    {
+    while(fgets(readThrough2, MAX_SIZE, file2) != NULL) {
     	tmp2[tabSize2] = (char*)malloc((strlen(readThrough2))*sizeof(char));
     	strcpy(tmp2[tabSize2], readThrough2);
     	tabSize2++;
