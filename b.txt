@@ -1,17 +1,10 @@
-AAA
-EEE
-TEST
-TEST 2
-AZZ
-AZE
-ABC
-FIN
-aaaaa
-zzzzz
-eeeee
-FIN2
 A
+AZERTY
+QSDFGH
+AQWXSZ
+ABIS
 B
-azerty
 C
+EEEE
+RRRR
 D

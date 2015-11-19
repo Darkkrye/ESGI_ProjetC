@@ -63,7 +63,7 @@ int main(int argc, char** argv){
 		} else {
             // printf("i : %d, j : %d\n", i, j);
 			j2 = j;
-			j++;
+			// j++;
             isLinesAdded = 0;
 			while (j < tabSize2) {
 
@@ -95,7 +95,7 @@ int main(int argc, char** argv){
             if(!isLinesAdded) {
                 j = j2;
                 i2 = i;
-                i++;
+                // i++;
                 isLinesDeleted = 0;
                 while(i < tabSize1) {
                     if(!strcmp(tab1[i], tab2[j])) {
@@ -118,12 +118,81 @@ int main(int argc, char** argv){
                     }
                     i++;
                 }
+
+                // A TESTER -->
+                if(!isLinesDeleted) {
+                    i = i2;
+                    isLinesReplaced = 0;
+                    while(i < tabSize1) {
+                        j = j2;
+                        while(j < tabSize2) {
+                            if(!strcmp(tab1[i], tab2[j])) {
+                                // printf("i = %d / i2 = %d / j = %d / j2 = %d\n", i, i2, j, j2);
+                                if(i2 + 1 == i && j2 + 1 == j){
+                                    printf("%dc%d\n", i, j);
+                                    for (; i2 < i; i2++) {
+                                        printf("< %s", tab1[i2]);
+                                    }
+                                    printf("---\n");
+                                    for(; j2 < j; j2++) {
+                                        printf("> %s", tab2[j2]);
+                                    }
+                                    isLinesReplaced = 1;
+                                    break;
+                                } else {
+                                    printf("%d,%dc%d,%d\n", i2+1, i, j2+1, j);
+                                    for (; i2 < i; i2++) {
+                                        printf("< %s", tab1[i2]);
+                                    }
+                                    printf("---\n");
+                                    for(; j2 < j; j2++) {
+                                        printf("> %s", tab2[j2]);
+                                    }
+                                    isLinesReplaced = 1;
+                                    break;
+                                }
+                            }
+                            j++;
+                        }
+                        if(isLinesReplaced)
+                            break;
+                        i++;
+                    }
+                }
+                // <-- A TESTER
             }
+
+
+            // if(!isLinesAdded && !isLinesDeleted) {
+
+            // }
     	}
 
 
     }
+
+    if(i >= tabSize1 && j < tabSize2) {
+        if(j + 1 == tabSize2) {
+            printf("%da%d\n> %s", i, j+1, tab2[j]);
+        } else {
+            printf("%da%d,%d\n", i, j+1, tabSize2);
+            for(; j < tabSize2 ; j++) {
+                printf("> %s", tab2[j]);
+            }
+        }
+    } else if(i < tabSize1 && j >= tabSize2) {
+        if(i + 1 == tabSize1) {
+            printf("%dd%d\n< %s", i, j+1, tab1[i]);
+        } else {
+            printf("%d,%da%d\n", i + 1, tabSize1, j);
+            for(; i < tabSize1 ; i++) {
+                printf("< %s", tab1[i]);
+            }
+        }
+    }
     // printf("\n");
 
+    free(tab1);
+    free(tab2);
     return 0;
 }
