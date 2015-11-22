@@ -28,8 +28,7 @@ int main(int argc, char** argv){
     char* readThrough1 = (char*)malloc((MAX_SIZE)*sizeof(char));
     int tabSize1 = 0;
     
-    while(fgets(readThrough1, MAX_SIZE, file1) != NULL)
-    {
+    while(fgets(readThrough1, MAX_SIZE, file1) != NULL) {
     	tmp1[tabSize1] = (char*)malloc((strlen(readThrough1))*sizeof(char));
     	strcpy(tmp1[tabSize1], readThrough1);
     	tabSize1++;
@@ -41,136 +40,152 @@ int main(int argc, char** argv){
     char* readThrough2=(char*)malloc((MAX_SIZE)*sizeof(char));
     int tabSize2=0;
     j = 0;
-    while(fgets(readThrough2, MAX_SIZE, file2) != NULL)
-    {
+    while(fgets(readThrough2, MAX_SIZE, file2) != NULL) {
     	tmp2[tabSize2] = (char*)malloc((strlen(readThrough2))*sizeof(char));
     	strcpy(tmp2[tabSize2], readThrough2);
     	tabSize2++;
     }
-	
-	
-	
-	
-	
-    /*j=0;	
-    while(j < tabSize1)
-    {
-    	printf("%i : %s", j, tab1[j]);
-    	j++;
-    }
-	
-	printf("\n\n");
-	
-    j=0;
-    while(j < tabSize2)
-    {
-    	printf("%i : %s", j, tab2[j]);
-    	j++;
-    }*/
-
-
 
     // COMAPARAISON DES FICHIERS
     int i = 0;
     j = 0;
-	int j2 = 0;
+	int j2 = 0, i2 = 0;
+    int isLinesAdded = 0, isLinesDeleted = 0, isLinesReplaced = 0;
+
     while(i < tabSize1 && j < tabSize2) {
+
 		if(!strcmp(tab1[i], tab2[j])) {
-			// printf("Ligne %i OK\n", i+1);
+            // printf("GOOD 2 -- i : %d - j : %d\n", i, j);
 			i++;
     		j++;
-		} else { //En gros j'essaye de voir si les 2 lignes ne sont pas identiques je continue les lignes du fichier 2 
-			/*j2 = j; //et j'essaye de trouver si la ligne du fichier 2 == la ligne du fichier 1 qui est en attente  
-			j2++; //et si c'est le cas et bin faut faire des trucs avec. J2 <- J ça permet après de pouvoir dire que dans le fichier
-			while (j2 < tabSize2) { //ce sont les lignes de j2 à j (puisqu'on a continué j) qui ne sont pas dans le fichier 1.
-				if(!strcmp(tab1[i], tab2[j2])) //après j'ai juste essayé des printf pour voir ce que j'avais
+		} else {
+            // printf("i : %d, j : %d\n", i, j);
+			j2 = j;
+			// j++;
+            isLinesAdded = 0;
+			while (j < tabSize2) {
+
+				if(!strcmp(tab1[i], tab2[j]))
 				{
-					// printf("%i:%s - %i:%s", j, tab2[j], i, tab1[i]);
-					if(i +1 == j2) {
-						printf("%ic%i\n", i, j2);
-						printf("< %s", tab1[i]);
-						printf("---\n");
-						printf("> %s", tab2[j2]);	
-					}
-					
-					if (i +2 == j2) {
-						printf("%ia%i,%i\n", i, j2+1, j);
-						printf("> %s", tab2[j2]);
-						printf("> %s", tab2[j2+1]);						
-					}
-				}
-				j2++;
-			}
-			i++;j++;*/
-			
-			// printf("Ligne i:%i / Ligne j:%i pas OK\n", i+1, j+1);
-			int saveJ = j;
-			int saveI = i;
-			int runThrough = 0;
-			while (i < tabSize1 && j < tabSize2) {
-				// printf("Ligne i:%i / Ligne j:%i\n", i+1, j+1);
-				
-				if (!strcmp(tab1[i], tab2[j])) {
-					// printf("%s/%s", tab2[j], tab1[i]);
-					printf("%ia%i,%i\n", i, saveJ+1, j);
-					for (runThrough = saveJ; runThrough < j; runThrough++) {
-						printf("> %s", tab2[runThrough]);
-					}
-					runThrough = 0;
-					break;
-				}
-				else if (j == tabSize2-1 && strcmp(tab1[i], tab2[j])) {
-					/*printf("%i - %i / %i - %i\n", i, j, saveI, saveJ);
-					printf("%ic%i\n<%s---\n>%s", i+1, saveJ+1, tab1[i], tab2[saveJ]);*/
-					
-					while (i < tabSize1) {
-						/*if(i+1 - saveI == j - saveJ && i < tabSize1-1 && j < tabSize2-1) {
-							printf("%ic%i\n<%s---\n>%s", saveI+1, saveJ+1, tab1[saveI], tab2[saveJ]);
-						} else if (i == tabSize1-1 && j == tabSize2-1) {
-							printf("%i, %id%i,%i\n", saveI, i, saveJ+1, j);
-						}*/
-						
-						if (i == tabSize1-1 && strcmp(tab1[i], tab2[j])) { //Test algo d
-							printf("%id%i\n", saveI, i);
-							for (runThrough = saveI; runThrough < i; runThrough++) {
-								printf("< %s", tab1[runThrough]);
-							}
-							runThrough = 0;
-							break;
-						}
-						
-						i++;
-					}
-					
-					i = saveI;
+					// Si le fichier 2 a des lignes en plus -->
+                    if(j == j2 + 1) {
+                        printf("%da%d\n> %s", i, j, tab2[j2]);
+                        isLinesAdded = 1;
+                    } else {
+                        printf("%da%d,%d\n", i, j2+1, j);
+                        isLinesAdded = 1;
+                        for( ; j2 < j ; j2++) {
+                            printf("> %s", tab2[j2]);
+                        }
+                    }
+                    // <--
+                    if(isLinesAdded) {
+                        j2++;
+                        // printf("GOOD --- i : %d - j : %d\n", i, j);
+                        break;
+                    }
+                    // printf("%s - %s", tab1[i], tab2[j]);					
 				}
 				j++;
 			}
-			j = saveJ;
-			i++;
-			j++;
+            // printf("FIN WHILE - i : %d - j : %d %d\n", i, j2, j);
+
+            if(!isLinesAdded) {
+                j = j2;
+                i2 = i;
+                // i++;
+                isLinesDeleted = 0;
+                while(i < tabSize1) {
+                    if(!strcmp(tab1[i], tab2[j])) {
+                        if (i == i2 + 1) {
+                            printf("%dd%d\n< %s", i, j, tab1[i2]);
+                            isLinesDeleted = 1;
+                        } else {
+                            printf("%d,%dd%d\n", i2+1, i, j);
+                            isLinesDeleted = 1;
+                            for( ; i2 < i ; i2++) {
+                                printf("< %s", tab1[i2]);
+                            }
+                        }
+
+                        if(isLinesDeleted) {
+                            i2++;
+                            // printf("GOOD --- i : %d - j : %d\n", i, j);
+                            break;
+                        }
+                    }
+                    i++;
+                }
+
+                // A TESTER -->
+                if(!isLinesDeleted) {
+                    i = i2;
+                    isLinesReplaced = 0;
+                    while(i < tabSize1) {
+                        j = j2;
+                        while(j < tabSize2) {
+                            if(!strcmp(tab1[i], tab2[j])) {
+                                // printf("i = %d / i2 = %d / j = %d / j2 = %d\n", i, i2, j, j2);
+                                if(i2 + 1 == i && j2 + 1 == j)
+                                    printf("%dc%d\n", i, j);
+                                else if (i2 + 1 == i && j2 + 1 != j)
+                                    printf("%dc%d,%d\n", i2+1, j2+1, j);
+                                else if(i2 + 1 != i && j2 + 1 == j)
+                                    printf("%d,%dc%d\n", i2+1, i, j2+1);
+                                else 
+                                    printf("%d,%dc%d,%d\n", i2+1, i, j2+1, j);
+
+                                for (; i2 < i; i2++) {
+                                    printf("< %s", tab1[i2]);
+                                }
+                                printf("---\n");
+                                for(; j2 < j; j2++) {
+                                    printf("> %s", tab2[j2]);
+                                }
+                                isLinesReplaced = 1;
+                                break;
+                            }
+                            j++;
+                        }
+                        if(isLinesReplaced)
+                            break;
+                        i++;
+                    }
+                }
+                // <-- A TESTER
+            }
+
+
+            // if(!isLinesAdded && !isLinesDeleted) {
+
+            // }
     	}
+
 
     }
 
-// ANCIENNEMENT
-    // char fileLine1[MAX_SIZE] = "";
-    // char fileLine2[MAX_SIZE] = "";
-    // while(fgets(fileLine1, MAX_SIZE, file1) != NULL) {
-    // 	while(fgets(fileLine2, MAX_SIZE, file2) != NULL) {
-    // 		if(0 == strcmp(fileLine1, fileLine2)) {
-    // 			// printf("> %s", fileLine1);
-    // 			break;
-    // 		} else {
-    // 			printf("> %s", fileLine2);
-    // 		}
-    // 	//     fileLine2 = (char*)malloc(sizeof(char*));
-    // 		// printf("%s\n", fileLine2);
-    // 	}
-	   //  // fileLine1 = (char*)malloc(sizeof(char*));
-	   //  // printf("%s\n", fileLine1);
-    // }
-// <--
+    if(i >= tabSize1 && j < tabSize2) {
+        if(j + 1 == tabSize2) {
+            printf("%da%d\n> %s", i, j+1, tab2[j]);
+        } else {
+            printf("%da%d,%d\n", i, j+1, tabSize2);
+            for(; j < tabSize2 ; j++) {
+                printf("> %s", tab2[j]);
+            }
+        }
+    } else if(i < tabSize1 && j >= tabSize2) {
+        if(i + 1 == tabSize1) {
+            printf("%dd%d\n< %s", i, j+1, tab1[i]);
+        } else {
+            printf("%d,%da%d\n", i + 1, tabSize1, j);
+            for(; i < tabSize1 ; i++) {
+                printf("< %s", tab1[i]);
+            }
+        }
+    }
+    // printf("\n");
 
+    free(tab1);
+    free(tab2);
     return 0;
 }
