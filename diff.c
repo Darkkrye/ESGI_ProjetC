@@ -214,6 +214,8 @@ int my_diff_ignore_case(char* pArray1, char* pArray2) {
 
     free(tab1);
     free(tab2);
+    free(noCase1);
+    free(noCase2);
 
 	return 0;
 }
