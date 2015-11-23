@@ -8,3 +8,6 @@ C
 AAAA
 ZZZZ
 D
+aaa
+aze
+eza
