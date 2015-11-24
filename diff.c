@@ -24,11 +24,12 @@ int main(int argc, char** argv){
 			my_diff_help();
 			return 0;
 		} else {
-			printf("Nombre de parametres insuffisant\n");
+			printf("Too few parameters\n");
 			return 1;
 		}
     }
 	
+	//Conditionnal call of function
 	if (strcmp(argv[1], "-q") == 0  || strcmp(argv[1], "--brief") == 0) {
 		my_diff_brief(argv[2], argv[3]);
 	} else if (strcmp(argv[1], "-s") == 0 || strcmp(argv[1], "--report-identical-files") == 0) {
@@ -598,7 +599,8 @@ int my_diff_brief(char* pArray1, char* pArray2) {
     // FILES COMPARISON
     int i = 0, isDifferent = 0;
 	j = 0;
-
+	
+	//Run through the files
     while(i < tabSize1 && j < tabSize2) {
 		if(!strcmp(tab1[i], tab2[j])) {
 			i++;
@@ -608,7 +610,8 @@ int my_diff_brief(char* pArray1, char* pArray2) {
 			break;
     	}
     }
-
+	
+	//if files have at least 1 line different
 	if (isDifferent == 1) {
 		printf("Files %s and %s differ", pArray1, pArray2);
 	}
