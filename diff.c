@@ -782,7 +782,9 @@ int my_diff_report_identical_files(char* pArray1, char* pArray2) {
 
 void my_diff_help() {
 	printf("\n");
-	printf("%0s %58s\n", "--normal", "output a normal diff (the default)");
+	printf("%0s %54s\n", "    --normal", "output a normal diff (the default)");
 	printf("%0s %50s\n", "-q, --brief", "report only when files differ");
 	printf("%0s %38s\n", "-s, --report-identical-files", "report when two files are the same");
+	printf("%0s %55s\n", "-i, --ignore-case", "ignore case differences in file contents");
+	printf("%0s %32s\n", "-w, --ignore-all-space", "ignore all white space");
 }
