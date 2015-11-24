@@ -1,4 +1,4 @@
-A
+a
 YTREZA
 HGFDSQ
 ZSXWQA
@@ -8,4 +8,6 @@ C
 AAAA
 ZZZZ
 D
-azerty
+aaa
+aze
+eza
