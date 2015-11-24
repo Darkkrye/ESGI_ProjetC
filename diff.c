@@ -24,7 +24,7 @@ int main(int argc, char** argv){
 			my_diff_help();
 			return 0;
 		} else {
-			printf("Too few parameters\n");
+			printf("diff: missing operand\ndiff: Try 'diff --help' for more information.\n");
 			return 1;
 		}
     }
@@ -613,7 +613,7 @@ int my_diff_brief(char* pArray1, char* pArray2) {
 	
 	//if files have at least 1 line different
 	if (isDifferent == 1) {
-		printf("Files %s and %s differ", pArray1, pArray2);
+		printf("Files %s and %s differ\n", pArray1, pArray2);
 	}
 	
 	return 0;
@@ -756,9 +756,9 @@ int my_diff_report_identical_files(char* pArray1, char* pArray2) {
     }
 	
 	if (isDifferent == 0) {
-		printf("Files %s and %s are identical", pArray1, pArray2);
+		printf("Files %s and %s are identical\n", pArray1, pArray2);
 	} else {
-				if(i >= tabSize1 && j < tabSize2) {
+		if(i >= tabSize1 && j < tabSize2) {
 			if(j + 1 == tabSize2) {
 				printf("%da%d\n> %s", i, j+1, tab2[j]);
 			} else {
