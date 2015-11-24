@@ -20,7 +20,7 @@ int main(int argc, char** argv){
 	
 	if (3 > argc)
     {
-		if(argv[1][0] == 45 && argv[1][1] == 45 && argv[1][2] == 104) {
+		if(strcmp(argv[1], "--help") == 0) {
 			my_diff_help();
 			return 0;
 		} else {
@@ -785,6 +785,9 @@ void my_diff_help() {
 	printf("%0s %54s\n", "    --normal", "output a normal diff (the default)");
 	printf("%0s %50s\n", "-q, --brief", "report only when files differ");
 	printf("%0s %38s\n", "-s, --report-identical-files", "report when two files are the same");
+	printf("\n");
 	printf("%0s %55s\n", "-i, --ignore-case", "ignore case differences in file contents");
 	printf("%0s %32s\n", "-w, --ignore-all-space", "ignore all white space");
+	printf("\n");
+	printf("%0s %48s\n", "    --help", "display this help and exit");
 }
