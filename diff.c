@@ -8,6 +8,7 @@ int my_diff(char* pArray1, char* pArray2);
 int my_diff_brief(char* pArray, char* pArray2);
 int my_diff_report_identical_files(char* pArray, char* pArray2);
 void my_diff_help();
+void my_diff_version();
 int my_diff_ignore_case(char* pArray1, char* pArray2);
 int my_diff_ignore_space(char* pArray1, char* pArray2);
 
@@ -22,6 +23,9 @@ int main(int argc, char** argv){
     {
 		if(strcmp(argv[1], "--help") == 0) {
 			my_diff_help();
+			return 0;
+		} else if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0) {
+			my_diff_version();
 			return 0;
 		} else {
 			printf("diff: missing operand\ndiff: Try 'diff --help' for more information.\n");
@@ -38,6 +42,8 @@ int main(int argc, char** argv){
         my_diff_ignore_case(argv[2], argv[3]);
     } else if (strcmp(argv[1], "-w") == 0 || strcmp(argv[1], "--ignore-all-space") == 0) {
         my_diff_ignore_space(argv[2], argv[3]);
+	} else if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0) {
+		my_diff_version();
 	} else if (strcmp(argv[1], "--help") == 0) {
 		my_diff_help();
     } else if (strcmp(argv[1], "--normal") == 0) {
@@ -793,4 +799,12 @@ void my_diff_help() {
 	printf("%0s %32s\n", "-w, --ignore-all-space", "ignore all white space");
 	printf("\n");
 	printf("%0s %48s\n", "    --help", "display this help and exit");
+}
+
+void my_diff_version() {
+	printf("diff (GNU diffutils) 1.0 (2015)\n");
+	printf("\n");
+	printf("This program comes with NO WARRANTY, to the extent permitted by law.\n");
+	printf("\n");
+	printf("Written by Nicolas KERVOERN and Pierre BOUDON.\n");
 }
