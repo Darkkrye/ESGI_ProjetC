@@ -75,7 +75,7 @@ int my_diff_ignore_case(char* pArray1, char* pArray2) {
     	strcpy(tmp1[tabSize1], readThrough1);
         for(x = 0 ; strcmp(&tmp1[tabSize1][x], "\0") != 0 ; x++) {
             // if each char is a lower case, add it to copy tab as a upper case
-            if(tmp1[tabSize1][x] >= 65 && tmp1[tabSize1][x] <= 90 /*&& option = "-i"*/) {
+            if(tmp1[tabSize1][x] >= 65 && tmp1[tabSize1][x] <= 90) {
                 modifTab1[tabSize1][x] = tmp1[tabSize1][x] + 32;
             } else {
                 modifTab1[tabSize1][x] = tmp1[tabSize1][x];
@@ -96,7 +96,7 @@ int my_diff_ignore_case(char* pArray1, char* pArray2) {
     	modifTab2[tabSize2] = (char*)malloc((strlen(readThrough2))*sizeof(char));
         strcpy(tmp2[tabSize2], readThrough2);
         for(x = 0 ; strcmp(&tmp2[tabSize2][x], "\0") != 0 ; x++) {
-            if(tmp2[tabSize2][x] >= 65 && tmp2[tabSize2][x] <= 90 /*&& option = "-i"*/) {
+            if(tmp2[tabSize2][x] >= 65 && tmp2[tabSize2][x] <= 90) {
                 modifTab2[tabSize2][x] = tmp2[tabSize2][x] + 32;
             } else {
                 modifTab2[tabSize2][x] = tmp2[tabSize2][x];
@@ -115,7 +115,7 @@ int my_diff_ignore_case(char* pArray1, char* pArray2) {
     ignore all white space
 */
 int my_diff_ignore_space(char* pArray1, char* pArray2) {
-    
+    const char c = ' ';
     FILE * file1=fopen(pArray1,"r+");
     FILE * file2=fopen(pArray2,"r+");
 
@@ -136,10 +136,10 @@ int my_diff_ignore_space(char* pArray1, char* pArray2) {
         tmp1[tabSize1] = (char*)malloc((strlen(readThrough1))*sizeof(char));
         modifTab1[tabSize1] = (char*)malloc((strlen(readThrough1))*sizeof(char));
         strcpy(tmp1[tabSize1], readThrough1);
+        count = 0;
         for(x = 0 ; strcmp(&tmp1[tabSize1][x], "\0") != 0 ; x++) {
             // Add each char to the tab's copy if it's not a white space
-            count = 0;
-            if(tmp1[tabSize1][x] != 32) {
+            if(tmp1[tabSize1][x] != c) {
                 modifTab1[tabSize1][x - count] = tmp1[tabSize1][x];
             } else {
                 count++;
@@ -159,14 +159,16 @@ int my_diff_ignore_space(char* pArray1, char* pArray2) {
         tmp2[tabSize2] = (char*)malloc((strlen(readThrough2))*sizeof(char));
         modifTab2[tabSize2] = (char*)malloc((strlen(readThrough2))*sizeof(char));
         strcpy(tmp2[tabSize2], readThrough2);
+        count = 0;
         for(x = 0 ; strcmp(&tmp2[tabSize2][x], "\0") != 0 ; x++) {
-            count = 0;
-            if(tmp2[tabSize2][x] != ' ') {
+            if(tmp2[tabSize2][x] != c) {
                 modifTab2[tabSize2][x - count] = tmp2[tabSize2][x];
             } else {
                 count++;
             }
         }
+        // printf("%s", tmp2[tabSize2]);
+        // printf("%s", modifTab2[tabSize2]);
         tabSize2++;
     }
 
@@ -180,7 +182,7 @@ int my_diff_ignore_space(char* pArray1, char* pArray2) {
     output a normal diff (the default)
 */
 int my_diff(char* pArray1, char* pArray2) {
-    
+
     FILE * file1=fopen(pArray1,"r+");
     FILE * file2=fopen(pArray2,"r+");
 
@@ -232,20 +234,25 @@ int my_diff(char* pArray1, char* pArray2) {
     Common comparison code
 */
 void compare(char** tab1, char** tab2, char** modifTab1, char** modifTab2, int tabSize1, int tabSize2) {
+
     // FILES COMPARISON
     int i = 0;
     int j = 0;
     int j2 = 0, i2 = 0;
     int isLinesAdded = 0, isLinesDeleted = 0, isLinesReplaced = 0;
 
+    // Loop : index of tab < nomber of lines of the file
     while(i < tabSize1 && j < tabSize2) {
-
+        // If line from file A and line from file B are equal 
         if(!strcmp(modifTab1[i], modifTab2[j])) {
             i++;
             j++;
         } else {
+            // if the lines differ
             j2 = j;
             isLinesAdded = 0;
+            // Keep the line of file A
+            // And continue to progress in file B
             while (j < tabSize2) {
 
                 if(!strcmp(modifTab1[i], modifTab2[j]))
@@ -268,6 +275,8 @@ void compare(char** tab1, char** tab2, char** modifTab1, char** modifTab2, int t
                 j++;
             }
 
+            // Keep the line of file B
+            // And continue to progress in file A
             if(!isLinesAdded) {
                 j = j2;
                 i2 = i;
@@ -296,6 +305,9 @@ void compare(char** tab1, char** tab2, char** modifTab1, char** modifTab2, int t
                 if(!isLinesDeleted) {
                     i = i2;
                     isLinesReplaced = 0;
+                    // if both previous treatment failed,
+                    // compare the line of file A with each of file B
+                    // then get the next line and do it again.
                     while(i < tabSize1) {
                         j = j2;
                         while(j < tabSize2) {
@@ -333,6 +345,10 @@ void compare(char** tab1, char** tab2, char** modifTab1, char** modifTab2, int t
 
     }
 
+    // When main loop if finish, at least 1 index > to nomber of lines of the file
+
+    // case where tab1 go to the end and not tab2
+    //  print each line of tab2 more
     if(i >= tabSize1 && j < tabSize2) {
         if(j + 1 == tabSize2) {
             printf("%da%d\n> %s", i, j+1, tab2[j]);
@@ -342,6 +358,8 @@ void compare(char** tab1, char** tab2, char** modifTab1, char** modifTab2, int t
                 printf("> %s", tab2[j]);
             }
         }
+    // case where tab2 go to the end and not tab1
+    //  print each line of tab1 more
     } else if(i < tabSize1 && j >= tabSize2) {
         if(i + 1 == tabSize1) {
             printf("%dd%d\n< %s", i+1, j, tab1[i]);
@@ -351,27 +369,41 @@ void compare(char** tab1, char** tab2, char** modifTab1, char** modifTab2, int t
                 printf("< %s", tab1[i]);
             }
         }
+    // else compare both end of files
     } else {
-        if(i2 + 1 == i && j2 + 1 == j) {
-            printf("%dc%d\n", i, j);
-        }
-        else if (i2 + 1 == i && j2 + 1 != j)
-            printf("%dc%d,%d\n", i2+1, j2+1, j);
-        else if(i2 + 1 != i && j2 + 1 == j)
-            printf("%d,%dc%d\n", i2+1, i, j2+1);
-        else 
-            printf("%d,%dc%d,%d\n", i2+1, i, j2+1, j);
+        i2 = i;
+        while(i < tabSize1) {
+            j2 = j;
+            while(j < tabSize2) {
+                if(!strcmp(modifTab1[i], modifTab2[j])) {
+                    if(i2 + 1 == i && j2 + 1 == j) {
+                        printf("%dc%d\n", i, j);
+                    }
+                    else if (i2 + 1 == i && j2 + 1 != j)
+                        printf("%dc%d,%d\n", i2+1, j2+1, j);
+                    else if(i2 + 1 != i && j2 + 1 == j)
+                        printf("%d,%dc%d\n", i2+1, i, j2+1);
+                    else 
+                        printf("%d,%dc%d,%d\n", i2+1, i, j2+1, j);
 
-        for (; i2 < i; i2++) {
-            printf("< %s", tab1[i2]);
-        }
-        printf("---\n");
-        for(; j2 < j; j2++) {
-            printf("> %s", tab2[j2]);
+                    for (; i2 < i; i2++) {
+                        printf("< %s", tab1[i2]);
+                    }
+                    printf("---\n");
+                    for(; j2 < j; j2++) {
+                        printf("> %s", tab2[j2]);
+                    }
+                    isLinesReplaced = 1;
+                    break;
+                }
+                j++;
+            }
+            i++;
         }
 
     }
 
+    // free tabs
     free(tab1);
     free(tab2);
     free(modifTab1);
