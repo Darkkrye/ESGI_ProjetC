@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 #define MAX_SIZE 1000
 
@@ -9,43 +11,49 @@ void compare(char** tab1, char** tab2, char** modifTab1, char** modifTab2, int t
 int my_diff_brief(char* pArray, char* pArray2);
 int my_diff_report_identical_files(char* pArray, char* pArray2);
 void my_diff_help();
+void my_diff_version();
 int my_diff_ignore_case(char* pArray1, char* pArray2);
 int my_diff_ignore_space(char* pArray1, char* pArray2);
 
 int main(int argc, char** argv){
     
     if (1 == argc) {
-		printf("diff: missing operand after 'diff'\ndiff: Try 'diff --help' for more information.\n");
-		return 0;
-	}
-	
-	if (3 > argc)
+        printf("diff: missing operand after 'diff'\ndiff: Try 'diff --help' for more information.\n");
+        return 0;
+    }
+    
+    if (3 > argc)
     {
-		if(strcmp(argv[1], "--help") == 0) {
-			my_diff_help();
-			return 0;
-		} else {
-			printf("diff: missing operand\ndiff: Try 'diff --help' for more information.\n");
-			return 1;
-		}
+        if(strcmp(argv[1], "--help") == 0) {
+            my_diff_help();
+            return 0;
+        } else if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0) {
+            my_diff_version();
+            return 0;
+        } else {
+            printf("diff: missing operand\ndiff: Try 'diff --help' for more information.\n");
+            return 1;
+        }
     }
 	
 	//Conditionnal call of function
-	if (strcmp(argv[1], "-q") == 0  || strcmp(argv[1], "--brief") == 0) {
-		my_diff_brief(argv[2], argv[3]);
-	} else if (strcmp(argv[1], "-s") == 0 || strcmp(argv[1], "--report-identical-files") == 0) {
-		my_diff_report_identical_files(argv[2], argv[3]);
+    if (strcmp(argv[1], "-q") == 0  || strcmp(argv[1], "--brief") == 0) {
+        my_diff_brief(argv[2], argv[3]);
+    } else if (strcmp(argv[1], "-s") == 0 || strcmp(argv[1], "--report-identical-files") == 0) {
+        my_diff_report_identical_files(argv[2], argv[3]);
     } else if (strcmp(argv[1], "-i") == 0 || strcmp(argv[1], "--ignore-case") == 0) {
         my_diff_ignore_case(argv[2], argv[3]);
     } else if (strcmp(argv[1], "-w") == 0 || strcmp(argv[1], "--ignore-all-space") == 0) {
         my_diff_ignore_space(argv[2], argv[3]);
-	} else if (strcmp(argv[1], "--help") == 0) {
-		my_diff_help();
+    } else if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0) {
+        my_diff_version();
+    } else if (strcmp(argv[1], "--help") == 0) {
+        my_diff_help();
     } else if (strcmp(argv[1], "--normal") == 0) {
         my_diff(argv[2], argv[3]);
-	} else {
-		my_diff(argv[1], argv[2]);
-	}
+    } else {
+        my_diff(argv[1], argv[2]);
+    }
 }
 
 
@@ -167,8 +175,6 @@ int my_diff_ignore_space(char* pArray1, char* pArray2) {
                 count++;
             }
         }
-        // printf("%s", tmp2[tabSize2]);
-        // printf("%s", modifTab2[tabSize2]);
         tabSize2++;
     }
 
@@ -186,8 +192,84 @@ int my_diff(char* pArray1, char* pArray2) {
     FILE * file1=fopen(pArray1,"r+");
     FILE * file2=fopen(pArray2,"r+");
 
-    if(file1 == NULL || file2 == NULL)
+    if(file1 == NULL || file2 == NULL) {
+        printf("%s/%s: No such file or directory\n", pArray1, pArray2);
         return 1;
+    }
+
+    if(file1 == NULL && file2 == NULL) {
+        // Init tab where we'll stock names of files
+        char** tab1 = (char**)malloc((MAX_SIZE)*sizeof(char*));
+        char ** tmp1 = tab1;
+        char** tab2 = (char**)malloc((MAX_SIZE)*sizeof(char*));
+        char ** tmp2 = tab2;
+        int tabSize1 = 0, tabSize2 = 0;
+
+        // Init tab 1
+        struct dirent *lecture;
+        DIR *rep;
+        rep = opendir(pArray1);
+        while ((lecture = readdir(rep))) {
+            tmp1[tabSize1] = (char*)malloc((strlen(lecture->d_name))*sizeof(char));
+            tmp1[tabSize1] = lecture->d_name;
+            // printf("%s\n", lecture->d_name);
+            tabSize1++;
+        }
+        closedir(rep);
+        printf("");
+
+        // Init tab 2
+        struct dirent *lecture2;
+        DIR *rep2;
+        rep2 = opendir(pArray2);
+        while ((lecture2 = readdir(rep2))) {
+            tmp2[tabSize2] = (char*)malloc((strlen(lecture2->d_name))*sizeof(char));
+            tmp2[tabSize2] = lecture2->d_name;
+            tabSize2++;
+        }
+        closedir(rep2);
+        
+        int i, j, isOnly;
+
+        // Check tab1
+        for(i = 0 ; i < tabSize1 ; i++) {
+            isOnly = 1;
+            // Check tab2
+            for(j = 0 ; j < tabSize2 ; j++) {
+                // Compare the line of tab1 with each of tab2
+                if(strcmp(tmp1[i], tmp2[j]) == 0) {
+                    isOnly = 0;
+                    break;
+                }
+            }
+            // If no lines are equals, print 
+            if(isOnly) {
+                printf("Only in %s: %s\n", pArray1, tab1[i]);
+                printf("");
+            }
+        }
+
+        // Check tab2
+        for(j = 0 ; j < tabSize2 ; j++) {
+            isOnly = 1;
+            // Check tab 1
+            for(i = 0 ; i < tabSize1 ; i++) {
+                // Compare the line of tab2 with each of tab1
+                if(strcmp(tmp1[i], tmp2[j]) == 0) {
+                    isOnly = 0;
+                    break;
+                }
+            }
+            // If no lines are equals, print
+            if(isOnly == 1) {
+                printf("Only in %s: %s\n", pArray2, tab2[j]);
+                printf("");
+            }
+
+        }
+
+        return 1;
+    }
 
 
     int x;
@@ -654,4 +736,12 @@ void my_diff_help() {
 	printf("%0s %32s\n", "-w, --ignore-all-space", "ignore all white space");
 	printf("\n");
 	printf("%0s %48s\n", "    --help", "display this help and exit");
+}
+
+void my_diff_version() {
+    printf("diff (GNU diffutils) 1.0 (2015)\n");
+    printf("\n");
+    printf("This program comes with NO WARRANTY, to the extent permitted by law.\n");
+    printf("\n");
+    printf("Written by Nicolas KERVOERN and Pierre BOUDON.\n");
 }
